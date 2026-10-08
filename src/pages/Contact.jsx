@@ -9,6 +9,7 @@ export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     subject: '',
     message: ''
   });
@@ -18,57 +19,65 @@ export default function Contact() {
 
   const validate = () => {
     const errs = {};
+
     if (!formData.name.trim()) errs.name = 'Full name is required';
+
     if (!formData.email.trim()) {
       errs.email = 'Email address is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       errs.email = 'Invalid email address format';
     }
+
+    if (!formData.phone.trim()) errs.phone = 'Contact number is required';
+
     if (!formData.subject.trim()) errs.subject = 'Subject is required';
+
     if (!formData.message.trim()) errs.message = 'Message content is required';
+
     return errs;
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const errs = validate();
+    const errs = validate();
 
-  if (Object.keys(errs).length > 0) {
-    setErrors(errs);
-    return;
-  }
-
-  setErrors({});
-  setIsSubmitting(true);
-
-  try {
-    const response = await fetch('http://127.0.0.1:8000/api/contact/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (!response.ok) {
-      throw new Error('Message send nahi hua');
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
     }
 
-    setSubmitted(true);
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      message: '',
-    });
-  } catch (error) {
-    console.error(error);
-    alert('Message send nahi hua. Please try again.');
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+    setErrors({});
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('https://sagar-portfolio-backend-3vjg.onrender.com/api/contact/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Message send nahi hua');
+      }
+
+      setSubmitted(true);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: '',
+      });
+    } catch (error) {
+      console.error(error);
+      alert('Message send nahi hua. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (errors[e.target.name]) {
@@ -87,7 +96,7 @@ export default function Contact() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          
+
           {/* Contact Details Cards */}
           <div className="lg:col-span-5 space-y-6">
             <div className="space-y-2">
@@ -231,6 +240,27 @@ export default function Contact() {
                       {errors.email && <p className="text-[11px] text-red-400 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.email}</p>}
                     </div>
                   </div>
+
+                  {/* Contact Number */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-mono text-gray-300">
+                      Contact Number *
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="Enter your contact number"
+                      className="w-full px-4 py-3 rounded-xl bg-[#0d1117] border border-white/10 text-white text-xs focus:outline-none focus:border-[#00ff66] transition-colors"
+                    />
+                    {errors.phone && (
+                      <p className="text-[11px] text-red-400 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" /> {errors.phone}
+                      </p>
+                    )}
+                  </div>
+                    
 
                   {/* Subject */}
                   <div className="space-y-1.5">

@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_URL = 'http://127.0.0.1:8000/api/projects/';
+const API_URL = 'https://sagar-portfolio-backend-3vjg.onrender.com/api/projects/';
 
 export default function Projects() {
   const [activeFilter, setActiveFilter] = useState('All');
